@@ -1,33 +1,46 @@
 ---
-title: "Epi590 final project"
+title: "Epi590 Final Project"
 author: "Rebekah Hafen"
-format: pdf
+format: html
 editor: visual
+echo: false
+warning: false
+message: false
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+**About the data:** These data are from the Duke University Cardiovascular Disease Databank. This data set contains 3504 patients were referred to the university Medical Center for chest pain and were assessed with cardiac catheterization. This is performed to diagnose and open blockages in these arteries. At catheterization, a reduction of at least 75% in the artery diameter is considered a significant reduction in blood flow
 
 ```{r}
 library(tidyverse)
 library(gtsummary)
-raw_data <- read_csv(here :: here("data", "cheeses.csv"))
-cheese <- raw_data |>
-	select(cheese, milk, country, type, fat_content, vegetarian)
+load(here :: here("data", "cath.rda"), verbose = TRUE)
 ```
-
-You can add options to executable code like this
 
 ```{r}
-tbl_summary(
-	cheese,
-	by = type,
-	include = c(milk, country, fat_content, vegetarian))
+#| label: tbl-descr
+#| tbl-cap: "Descriptive statistics"
+table1 <- tbl_summary(
+	cath,
+	by = sex) |>
+	add_overall(col_label= "**Total**")
+table1
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+A greater proportion of male (`r inline_text(table1, variable= "sigdz", column= "stat_1")`) than female (`r inline_text(table1, variable= "sigdz", column= "stat_2")`) participants had significant coronary disease.
+
+```{r}
+#| label: tbl-two
+#| tbl-cap: "Logistic regression results"
+logistic_model <- glm(sigdz ~ sex + age + cad_dur + choleste,
+											data = cath, family = binomial())
+tbl_regression(
+	logistic_model, 
+	exponentiate = TRUE
+)
+```
+
+```{r}
+#| label: fig-hist
+#| fig-cap: "Histogram of cholesterol levels (mg%)"
+hist(cath$choleste)
+```
