@@ -3,6 +3,7 @@ title: "Epi590 Final Project"
 author: "Rebekah Hafen"
 format: html
 editor: visual
+theme: minty
 echo: false
 warning: false
 message: false
