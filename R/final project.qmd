@@ -26,7 +26,11 @@ table1 <- tbl_summary(
 table1
 ```
 
+In @tbl-descr, we see descriptive statistics of the sample by sex (male=0, female=1) and overall.
+
 A greater proportion of male (`r inline_text(table1, variable= "sigdz", column= "stat_1")`) than female (`r inline_text(table1, variable= "sigdz", column= "stat_2")`) participants had significant coronary disease.
+
+The mean age is (`r mean(cath$age)`) years.
 
 ```{r}
 #| label: tbl-two
@@ -39,8 +43,12 @@ tbl_regression(
 )
 ```
 
+@tbl-two shows logistic regression results for significant coronary disease with sex, age, cholesterol, and duration of CAD symptoms.
+
 ```{r}
 #| label: fig-hist
 #| fig-cap: "Histogram of cholesterol levels (mg%)"
 hist(cath$choleste)
 ```
+
+@fig-hist is a histogram of cholesterol levels (mg%) among participants.
