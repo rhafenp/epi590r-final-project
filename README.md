@@ -1,0 +1,77 @@
+This will walk you through creating a summary table, logistic regression, and histogram for participants in a coronary disease study then render a quarto document
+
+---
+title: "Epi590 Final Project"
+author: "Rebekah Hafen"
+format: html
+editor: visual
+echo: false
+warning: false
+message: false
+---
+
+**About the data:** These data are from the Duke University Cardiovascular Disease Databank. This data set contains 3504 patients were referred to the university Medical Center for chest pain and were assessed with cardiac catheterization. This is performed to diagnose and open blockages in these arteries. At catheterization, a reduction of at least 75% in the artery diameter is considered a significant reduction in blood flow
+
+```{r}
+#load libraries and data set
+library(tidyverse)
+library(gtsummary)
+load(here :: here("data", "cath.rda"), verbose = TRUE)
+```
+
+```{r}
+#create table 1 descriptice stats of data set
+#| label: tbl-descr
+#| tbl-cap: "Descriptive statistics"
+table1 <- tbl_summary(
+	cath,
+	by = sex) |>
+	add_overall(col_label= "**Total**")
+table1
+```
+
+In @tbl-descr, we see descriptive statistics of the sample by sex (male=0, female=1) and overall.
+
+A greater proportion of male (`r inline_text(table1, variable= "sigdz", column= "stat_1")`) than female (`r inline_text(table1, variable= "sigdz", column= "stat_2")`) participants had significant coronary disease.
+
+The mean age is (`r mean(cath$age)`) years.
+
+```{r}
+#create logistic regression table
+#| label: tbl-two
+#| tbl-cap: "Logistic regression results"
+logistic_model <- glm(sigdz ~ sex + age + cad_dur + choleste,
+											data = cath, family = binomial())
+tbl_regression(
+	logistic_model, 
+	exponentiate = TRUE
+)
+```
+
+@tbl-two shows logistic regression results for significant coronary disease with sex, age, cholesterol, and duration of CAD symptoms.
+
+```{r}
+#create and then save histogram
+#| label: fig-hist
+#| fig-cap: "Histogram of cholesterol levels (mg%)"
+hist(cath$choleste)
+
+png(filename = here::here("chol_hist.png"))
+
+```
+
+@fig-hist is a histogram of cholesterol levels (mg%) among participants.
+
+```{r}
+#create standard deviation function
+stddev <- function(x){
+	n <- length(x)
+	mean_val <- sum(x) / n
+	stddev <- sqrt(sum((x-mean_val)^2)/(n-1))
+	return(stddev)
+}
+
+
+sd <- stddev(cath$age)
+print(sd)
+```
