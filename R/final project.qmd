@@ -18,9 +18,9 @@ load(here :: here("data", "cath.rda"), verbose = TRUE)
 ```
 
 ```{r}
-#create table 1 descriptice stats of data set
 #| label: tbl-descr
 #| tbl-cap: "Descriptive statistics"
+#create table 1 descriptice stats of data set
 table1 <- tbl_summary(
 	cath,
 	by = sex) |>
@@ -35,9 +35,9 @@ A greater proportion of male (`r inline_text(table1, variable= "sigdz", column= 
 The mean age is (`r mean(cath$age)`) years.
 
 ```{r}
-#create logistic regression table
 #| label: tbl-two
 #| tbl-cap: "Logistic regression results"
+#create logistic regression table
 logistic_model <- glm(sigdz ~ sex + age + cad_dur + choleste,
 											data = cath, family = binomial())
 tbl_regression(
@@ -49,9 +49,9 @@ tbl_regression(
 @tbl-two shows logistic regression results for significant coronary disease with sex, age, cholesterol, and duration of CAD symptoms.
 
 ```{r}
-#create and then save histogram
 #| label: fig-hist
 #| fig-cap: "Histogram of cholesterol levels (mg%)"
+#create and then save histogram
 hist(cath$choleste)
 
 png(filename = here::here("chol_hist.png"))
